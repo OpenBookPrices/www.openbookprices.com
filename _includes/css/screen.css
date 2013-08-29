@@ -159,7 +159,6 @@ nav hr {
   font: 400 16px/22px "open sans", sans-serif;
   border-left: 1px solid #DDD;
   padding-left: 40px;
-  padding-top: 25px;
   min-height: 400px;
 }
 
@@ -244,3 +243,18 @@ nav hr {
   font-size: smaller;
   padding-bottom: 10px
 }
+
+menu {
+  font-size: 14px;
+  margin-bottom: 1em;
+}
+
+menu ul {
+  margin: 0;
+  text-align: right;
+}
+menu ul li {
+  display: inline;
+  margin-left: 1em;
+}
+
