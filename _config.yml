@@ -1,27 +1,27 @@
 # General Jekyll Config
 pygments: true
-url: http://example.com
+url: http://www.openbookprices.com
 lsi: false
 exclude: [LICENSE, CNAME, README.md, .gitignore]
 
 # Theme customization - please change from the defaults!
 theme:
   # Color for top bar, links, etc
-  highlight_color: '#3498db'
+  highlight_color: '#771188'
+
 
   # Profile links on the left sidebar, leave blank to ignore
   social:
-    github: swanson
-    twitter: _swanson
-    hacker_news: swanson
+    github: OpenBookPrices
+    twitter: OpenBookPrices
 
   # "Hi, I'm _______"
-  name: Matt Swanson
-  email: test@example.com
-  tagline: "weak opinions, strongly held"
+  name: OpenBookPrices
+  email: hello@openbookprices.com
+  tagline: "any book, country and currency for every shop"
 
   # Google Analytics key, leave blank to ignore
   google_analytics_key: UA-xxxx-x
 
   # Toggle "Postings are my own" disclaimer in footer
-  show_disclaimer: true
+  show_disclaimer: false
