@@ -10,3 +10,45 @@ title: Tour
   </p>
 </section>
 
+<section id="restful">
+  <h2>RESTful</h2>
+
+  <p>All requests to the API are <code>GET</code> requests using http.</p>
+
+  <p>There is no authentication or API key required.</p>
+</section>
+
+<section id="json">
+  <h2>JSON</h2>
+
+  <p>The response data is formatted using <a href="http://en.wikipedia.org/wiki/JSON">JSON</a>.</p>
+</section>
+
+<section id="jsonp">
+  <h2>JSONP</h2>
+
+  <p>If you add a <code>callback</code> query parameter to the url the response will be in <a href="http://en.wikipedia.org/wiki/JSONP">JSONP</a> so you call the API from a browser without worrying about the <a href="http://en.wikipedia.org/wiki/Same_origin_policy">same origin</a> restrictions.</p>
+
+  <p><small>(We'd suggest not using JSONP if you can help it as the responses won't be edge cached.)</small></p>
+</section>
+
+<section id="cors">
+  <h2>CORS</h2>
+
+  <p><code>Access-Control-Allow-Origin: *</code></p>
+
+  <p>The API also sends the above header so that <a href="http://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a> can be used (if the browser <a href="http://caniuse.com/#feat=cors">supports</a> it).</p>
+
+  <p><small>(If you can use CORS you should, it means you'll get faster responses from the edge caches on the <a href="http://en.wikipedia.org/wiki/Content_delivery_network">CDN</a>)</small></p>
+
+
+</section>
+
+<section id="caching">
+  <h2>Caching</h2>
+
+  <p>The responses are intended to be cached and the correct headers are set and timestamps and ttls are in the returned data.</p>
+
+  <p><small>The cache will not hold stale data, please don't try to cache-bust as you will not get anything fresher. We try to limit the traffic that our fetchers send to the vendors sites and caching the results is part of that.</small></p>
+</section>
+
