@@ -22,3 +22,6 @@ theme:
 
   # Google Analytics key, leave blank to ignore
   google_analytics_key: UA-xxxx-x
+
+  # Base url to the reveal.js assets
+  reveal_base: //cdnjs.cloudflare.com/ajax/libs/reveal.js/2.4/
