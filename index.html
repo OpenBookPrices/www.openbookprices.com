@@ -5,10 +5,78 @@ title: OpenBookPrices.com
 
 <div id="home">
 
-  <h1>Dev is almost complete</h1>
+<h1>Book Price API</h1>
 
 <p>
-  We should be launching real soon now, just need to get a few operation related pieces in place.
+  OpenBookPrices is an API that lets you find the current prices for books at
+  different ventures, including shipping to different countries. It will also
+  convert the prices into the currency you request.
 </p>
 
+<p>
+  It is free to use and requires no authentication or sign up.
+</p>
+
+<h2>An Example</h2>
+
+<p>
+  This is an example <a href="http://api.openbookprices.com/prices/9780340831496/US/USD">request</a>
+  for prices of the excellent "McGee on Food and Cooking". The response is JSON
+  so it would not have the inline comments shown below:
+</p>
+
+{% highlight bash %}
+curl http://api.openbookprices.com/prices/9780340831496/US/USD
+{% endhighlight %}
+
+{% highlight js %}
+// return is an array of entries...
+[
+  // ... one per vendor that sells in the country requested
+  {
+    // The isbn for this book
+    "isbn": "9780340831496",
+
+    // The country and currency that the prices relate to. If the vendor sells
+    // in a different currency it is given in preConversionCurrency.
+    "country": "US",
+    "currency": "USD",
+    "preConversionCurrency": "GBP",
+
+    // Details about the vendor
+    "vendor": {
+      "code": "amazon_uk",
+      "name": "Amazon UK",
+      "homepage": "http://www.amazon.co.uk/"
+    },
+
+    // The url that the book can be purchased from.
+    "url": "http://www.amazon.co.uk/dp/0340831499",
+
+    // The url to the API endpoint for this vendor, to be used if price data
+    // is not cached.
+    "apiURL": "http://api.127.0.0.1.xip.io:3000/prices/9780340831496/US/GBP/amazon_uk"
+
+    // Details about this response, including when it is valid until and if it
+    // should be retried (which should be done to apiURL).
+    "status": "ok",
+    "timestamp": 1378833170,
+    "ttl": 3600,
+    "retryDelay": null,
+
+    // The actual prices
+    "offers": {
+      "new": {
+        "price": 21.7,
+        "availabilityNote": "Usually dispatched within 24 hours",
+        "shippingNote": "5 to 7 business days",
+        "shipping": 6.98,
+        "total": 28.68
+      }
+    },
+
+  },
+  // ... other entries removed for brevity
+]
+{% endhighlight %}
 </div>
