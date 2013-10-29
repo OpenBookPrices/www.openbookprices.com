@@ -40,14 +40,17 @@ title: OpenBookPrices
 <h2>An example</h2>
 
 <p>
-  This is an example <a href="http://api.openbookprices.com/prices/9780340831496/US/USD">request</a>
-  for prices of the excellent "McGee on Food and Cooking". The response is JSON
-  so it would not have the inline comments shown below:
+  This is an example <a href="http://api.openbookprices.com/v1/books/9780340831496/prices/US/USD/amazon_uk">request</a>
+  for prices of "McGee on Food and Cooking".
 </p>
 
 {% highlight bash %}
 curl http://api.openbookprices.com/v1/books/9780340831496/prices/US/USD/amazon_uk
 {% endhighlight %}
+
+<p>
+  The example response shown below has had comments added to explain the various fields:
+</p>
 
 {% highlight js %}
 
