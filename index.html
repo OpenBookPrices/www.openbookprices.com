@@ -9,7 +9,7 @@ title: OpenBookPrices.com
 
 <p>
   OpenBookPrices is an API that lets you find the current prices for books at
-  different ventures, including shipping to different countries. It will also
+  different vendors, including shipping to different countries. It will also
   convert the prices into the currency you request.
 </p>
 
@@ -26,57 +26,67 @@ title: OpenBookPrices.com
 </p>
 
 {% highlight bash %}
-curl http://api.openbookprices.com/prices/9780340831496/US/USD
+curl http://api.openbookprices.com/v1/books/9780340831496/prices/US/USD/amazon_uk
 {% endhighlight %}
 
 {% highlight js %}
-// return is an array of entries...
-[
-  // ... one per vendor that sells in the country requested
-  {
-    // The isbn for this book
+
+{
+  // Status of these results. Can be one of "ok", "unfetched", "pending",
+  // "stale" or "error"
+  "status": "ok",
+
+  // A summary of the request - the individual parts and also the url.
+  "request": {
     "isbn": "9780340831496",
-
-    // The country and currency that the prices relate to. If the vendor sells
-    // in a different currency it is given in preConversionCurrency.
     "country": "US",
+    "vendor": "amazon_uk",
     "currency": "USD",
-    "preConversionCurrency": "GBP",
+    "url": "http://api.openbookprices.com/v1/books/9780340831496/prices/US/USD/amazon_uk"
+  },
 
-    // Details about the vendor
-    "vendor": {
-      "code": "amazon_uk",
-      "name": "Amazon UK",
-      "homepage": "http://www.amazon.co.uk/"
-    },
+  // The actual offers from the vendor. This is keyed off the condition of the
+  // book ("new", "used" or "ebook"). Each offer contains the price, shipping
+  // and  total - these are to the chosen country and in the chosen currency.
+  // There are also notes on the availability and shipping.
+  "offers": {
+    "new": {
+      "price": 35.08,
+      "availabilityNote": "Usually dispatched within 24 hours",
+      "shippingNote": "5 to 7 business days",
+      "shipping": 11.28,
+      "total": 46.36
+    }
+  },
 
-    // The url that the book can be purchased from.
+  // Details of the vendor useful for when displaying these prices. The "url"
+  // (if present) is the link to the book on the vendor's site. Code is a repeat
+  // from the "request" above.
+  "vendor": {
+    "code": "amazon_uk",
     "url": "http://www.amazon.co.uk/dp/0340831499",
+    "name": "Amazon UK",
+    "homepage": "http://www.amazon.co.uk/"
+  },
 
-    // The url to the API endpoint for this vendor, to be used if price data
-    // is not cached.
-    "apiURL": "http://api.127.0.0.1.xip.io:3000/prices/9780340831496/US/GBP/amazon_uk"
-
-    // Details about this response, including when it is valid until and if it
-    // should be retried (which should be done to apiURL).
-    "status": "ok",
-    "timestamp": 1378833170,
+  // Other details about the request.
+  "meta": {
+    // "timestamp" and "ttl" can be used to determine freshness (same values
+    // are used to set the caching headers in the HTTP response).
+    "timestamp": 1382165629,
     "ttl": 3600,
+
+    // "retryDelay" is a value in seconds to wait before requesting the
+    // prices again which is easier to work with than adding logic based
+    // on "status". If not retry is needed it's value will be falsy.
     "retryDelay": null,
 
-    // The actual prices
-    "offers": {
-      "new": {
-        "price": 21.7,
-        "availabilityNote": "Usually dispatched within 24 hours",
-        "shippingNote": "5 to 7 business days",
-        "shipping": 6.98,
-        "total": 28.68
-      }
-    },
-
-  },
-  // ... other entries removed for brevity
-]
+    // "preConversionCurrency" is the currency that the price was originally
+    // in on the vendor's site before it was converted into the requested
+    // currency (in this case a conversion has been made from British Pounds
+    // to US Dollars).
+    "preConversionCurrency": "GBP"
+  }
+}
 {% endhighlight %}
 </div>
