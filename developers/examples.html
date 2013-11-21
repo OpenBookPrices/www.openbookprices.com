@@ -1,0 +1,62 @@
+---
+layout: default
+title: Developers
+---
+
+<h1>Examples</h1>
+
+<p>These are simple examples that you should be able to try in your browser.
+The API returns JSON which your browser will display more nicely with a plugin
+like <a href="https://www.google.co.uk/search?q=jsonview">JSONView</a> or a
+tool like <a href="http://www.getpostman.com/">Postman</a> (for Chrome).</p>
+
+<p>For more see the <a href="http://docs.openbookprices.apiary.io/">full API docs</a>.</p>
+
+<h2>Basic book details</h2>
+
+<p>
+  <a href="http://api.openbookprices.com/v1/books/9780131103627/details">http://api.openbookprices.com/v1/books/9780131103627/details</a>
+</p>
+
+<p>Get some very basic details about the book (eg title, authors).</p>
+
+<h2>Prices</h2>
+
+<p>
+  <a href="http://api.openbookprices.com/v1/books/9780131103627/prices">http://api.openbookprices.com/v1/books/9780131103627/prices</a>
+</p>
+
+<p>No country or currency specified so will geolocate using your IP address and
+redirect. Then displays all vendors that ship to where you are and the details
+that we currently hove cached. Does not block on scraping prices so returns
+very fast.</p>
+
+<hr>
+
+<p>
+  <a href="http://api.openbookprices.com/v1/books/9780131103627/prices/FR/EUR">http://api.openbookprices.com/v1/books/9780131103627/prices/FR/EUR</a>
+</p>
+
+<p>As above but with the country and currency specified (<tt>FR</tt> for France
+and <tt>EUR</tt> for Euro). If you leave out the currency then the primary
+currency for the country will be looked up and redirected to.</p>
+
+<p>The returned JSON contains the country and currency so you don't need to
+detect the redirect and parse the final url.</p>
+
+<hr>
+
+<p>
+  <a href="http://api.openbookprices.com/v1/books/9780131103627/prices/FR/EUR/amazon_us">http://api.openbookprices.com/v1/books/9780131103627/prices/FR/EUR/amazon_us</a>
+</p>
+
+<p>Get the pricing for an individual vendor, in this case <tt>amazon_us</tt>
+with shipping to Fronce and the amounts converted into Euros. If we don't have
+fresh data then we'll fetch it from the vendor using their API or scraping them
+so this might take longer to return, but once it does it is cached on the CDN
+so it'll be faster next time.</p>
+
+<p>Note that the response is identical to the entries in the <tt>results</tt>
+array for the non-vendor request, so you can use the same piece of code to
+process them both.</p>
+
