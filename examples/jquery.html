@@ -1,0 +1,115 @@
+---
+layout: default
+title: jQuery example
+---
+
+<h1>jQuery example</h1>
+
+<p>This is an example of loading prices from the API using jQuery</p>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+
+<form id="isbn-form">
+  <input type="text" id="isbn-input" placeholder="ISBN..." value="9781619493919">
+  <span>Try 9781619493919</span>
+  <input type="submit" value="Load prices">
+
+</form>
+
+<ul id="results">
+  <li>Results will go here</li>
+</ul>
+
+<script id="tmpl-offer" type="text/template">
+  <li id="offer-<%= id %>">
+    <?-- FIXME - should be offer.url -->
+    <a href="<%= data.vendor.url %>"><%= data.vendor.name %></a><br>
+    Total price: <strong><%= offer.total %> <%= data.request.currency %></strong><br>
+    Availability: <%= offer.availabilityNote %><br>
+    Shipping: <%= offer.shipping %> <%= data.request.currency %> &mdash; <%= offer.shippingNote %><br>
+  </li>
+</script>
+
+<script id="tmpl-pending" type="text/template">
+  <li id="pending-<%= id %>">
+    Fetching from <%= data.vendor.name %>&hellip;
+  </li>
+</script>
+
+<script>
+
+  // Get the template's markup...
+  var offerTemplate = $('#tmpl-offer').html();
+
+  $("#isbn-form").submit( function (e) {
+
+    // Prevent the form from submitting to the server.
+    e.preventDefault();
+
+    var resultsList = $('#results');
+    resultsList.find('li').remove();
+
+    // Get the isbn number from the form field
+    var isbn = $("#isbn-input").val();
+
+    var handlePricesResponse = function (data) {
+      var request = data.request;
+      var results = data.results;
+
+      // FIXME - show currency and country details
+      console.log(request);
+
+      for (var i = 0; i < results.length; i++) {
+        handleVendorResponse(results[i]);
+      }
+
+    };
+
+    var handleVendorResponse = function (data) {
+      var offers = data.offers;
+
+      // display the prices
+      _.each(offers, function (offer, condition) {
+        var row_identifier = isbn + '-' + data.request.vendor + '-' + condition;
+
+        // delete any existing li for this entry
+        $('#offer-' + row_identifier).remove();
+
+        var offerRow = $(
+          _.template(
+            offerTemplate,
+            { data: data, offer : offer, id: row_identifier }
+          )
+        );
+
+        offerRow.hide().appendTo(resultsList).slideDown();
+      });
+
+      // if required start another fetch
+      if (data.meta.retryDelay) {
+        window.setTimeout(
+          function () {
+            $.get(
+              data.request.url,
+              handleVendorResponse
+            );
+
+          },
+          data.meta.retryDelay*1000
+        );
+      }
+
+    };
+
+    // Send a request to the API
+    var api_base = 'http://127.0.0.1:3000';
+    // var api_base = 'http://api.openbookprices.com';
+    $.get(
+      api_base + "/v1/books/" + isbn + "/prices",
+      handlePricesResponse
+    );
+
+
+  });
+</script>
