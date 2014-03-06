@@ -32,7 +32,7 @@ title: jQuery example
 <script id="tmpl-offer" type="text/template">
   <li id="offer-<%= id %>" data-total-price="<%= offer.total %>">
     <?-- FIXME - should be offer.url -->
-    <a href="<%= data.vendor.url %>"><%= data.vendor.name %></a><br>
+    <a href="<%= data.vendor.url %>"><%= data.vendor.name %></a> (<%= condition %>)<br>
     Total price: <strong><%= offer.total %> <%= data.request.currency %></strong><br>
     Book price:  <%= offer.price %> <%= data.request.currency %><br>
     Shipping: <%= offer.shipping %> <%= data.request.currency %> &mdash; <%= offer.shippingNote %><br>
@@ -92,7 +92,7 @@ title: jQuery example
         var offerRow = $(
           _.template(
             offerTemplate,
-            { data: data, offer : offer, id: row_identifier }
+            { data: data, offer : offer, condition: condition, id: row_identifier }
           )
         );
 
