@@ -22,12 +22,13 @@ title: jQuery example
 </ul>
 
 <script id="tmpl-offer" type="text/template">
-  <li id="offer-<%= id %>">
+  <li id="offer-<%= id %>" data-total-price="<%= offer.total %>">
     <?-- FIXME - should be offer.url -->
     <a href="<%= data.vendor.url %>"><%= data.vendor.name %></a><br>
     Total price: <strong><%= offer.total %> <%= data.request.currency %></strong><br>
-    Availability: <%= offer.availabilityNote %><br>
+    Book price:  <%= offer.price %> <%= data.request.currency %><br>
     Shipping: <%= offer.shipping %> <%= data.request.currency %> &mdash; <%= offer.shippingNote %><br>
+    Availability: <%= offer.availabilityNote %><br>
   </li>
 </script>
 
@@ -83,7 +84,21 @@ title: jQuery example
           )
         );
 
-        offerRow.hide().appendTo(resultsList).slideDown();
+        // Insert the rows in order with the cheapest first. Find the first
+        // row that is more expensive than this offer.
+        var more_expensive_row = resultsList.find('li').filter(function (index) {
+          var row = $(this);
+          var total = parseFloat( row.data().totalPrice );
+          return total > offer.total;
+        }).first();
+
+        offerRow.hide();
+        if (more_expensive_row.size()) {
+          offerRow.insertBefore(more_expensive_row);
+        } else {
+          offerRow.appendTo(resultsList);
+        }
+        offerRow.slideDown();
       });
 
       // if required start another fetch
