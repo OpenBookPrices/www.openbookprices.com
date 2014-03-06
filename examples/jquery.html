@@ -17,6 +17,14 @@ title: jQuery example
 
 </form>
 
+<h2>Pending requests:</h2>
+
+<ul id="pending">
+  <li>Pending vendors will go here</li>
+</ul>
+
+<h2>Results:</h2>
+
 <ul id="results">
   <li>Results will go here</li>
 </ul>
@@ -34,7 +42,7 @@ title: jQuery example
 
 <script id="tmpl-pending" type="text/template">
   <li id="pending-<%= id %>">
-    Fetching from <%= data.vendor.name %>&hellip;
+    <%= data.vendor.name %>&hellip;
   </li>
 </script>
 
@@ -42,11 +50,15 @@ title: jQuery example
 
   // Get the template's markup...
   var offerTemplate = $('#tmpl-offer').html();
+  var pendingTemplate = $('#tmpl-pending').html();
 
   $("#isbn-form").submit( function (e) {
 
     // Prevent the form from submitting to the server.
     e.preventDefault();
+
+    var pendingList = $('#pending');
+    pendingList.find('li').remove();
 
     var resultsList = $('#results');
     resultsList.find('li').remove();
@@ -102,7 +114,19 @@ title: jQuery example
       });
 
       // if required start another fetch
+      var pendingID = '#pending-' + data.vendor.code;
       if (data.meta.retryDelay) {
+
+        if (!$(pendingID).size()) {
+          var pendingRow = $(
+            _.template(
+              pendingTemplate,
+              { data: data, id: data.vendor.code }
+            )
+          );
+          pendingRow.appendTo(pendingList);
+        }
+
         window.setTimeout(
           function () {
             $.get(
@@ -113,6 +137,8 @@ title: jQuery example
           },
           data.meta.retryDelay*1000
         );
+      } else {
+        $(pendingID).remove();
       }
 
     };
