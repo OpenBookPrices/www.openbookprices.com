@@ -24,6 +24,24 @@ $(function () {
 
   };
 
+  var displayOffer = function (offerRow, offer) {
+    // Insert the rows in order with the cheapest first. Find the first
+    // row that is more expensive than this offer.
+    var more_expensive_row = resultsList.find('li').filter(function (index) {
+      var row = $(this);
+      var total = parseFloat( row.data().totalPrice );
+      return total > offer.total;
+    }).first();
+
+    offerRow.hide();
+    if (more_expensive_row.size()) {
+      offerRow.insertBefore(more_expensive_row);
+    } else {
+      offerRow.appendTo(resultsList);
+    }
+    offerRow.slideDown();
+  };
+
   var handleVendorResponse = function (response) {
     var isbn = response.request.isbn;
     var offers = response.offers;
@@ -42,21 +60,7 @@ $(function () {
         )
       );
 
-      // Insert the rows in order with the cheapest first. Find the first
-      // row that is more expensive than this offer.
-      var more_expensive_row = resultsList.find('li').filter(function (index) {
-        var row = $(this);
-        var total = parseFloat( row.data().totalPrice );
-        return total > offer.total;
-      }).first();
-
-      offerRow.hide();
-      if (more_expensive_row.size()) {
-        offerRow.insertBefore(more_expensive_row);
-      } else {
-        offerRow.appendTo(resultsList);
-      }
-      offerRow.slideDown();
+      displayOffer(offerRow, offer);
     });
 
     // if required start another fetch
