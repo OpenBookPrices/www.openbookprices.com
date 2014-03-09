@@ -18,6 +18,12 @@ title: jQuery example
 
 </form>
 
+  <div id="request-information">
+    <!-- Will be replaced by the contents of the 'tmpl-request-information' template -->
+    &nbsp;
+  </div>
+
+
 <h2>Pending requests:</h2>
 
 <ul id="pending">
@@ -45,4 +51,10 @@ title: jQuery example
   <li id="pending-<%= id %>">
     <%= response.vendor.name %>&hellip;
   </li>
+</script>
+
+<script id="tmpl-request-information" type="text/template">
+    Finding prices for books sent to <strong><%= response.request.country %></strong>
+    with prices converted to <strong><%= response.request.currency %></strong>. These
+    were determined from your IP address. See the <a href="<%= response.request.url %>">raw JSON request</a>.
 </script>

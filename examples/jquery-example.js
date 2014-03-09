@@ -17,9 +17,20 @@ $(function () {
   // Get the template's markup...
   var offerTemplate = $('#tmpl-offer').html();
   var pendingTemplate = $('#tmpl-pending').html();
+  var requestInfoTemplate = $('#tmpl-request-information').html();
 
   var pendingList = $('#pending');
   var resultsList = $('#results');
+
+
+  var displayRequestInfo = function (response) {
+    var info = _.template(
+      requestInfoTemplate,
+      { response: response }
+    );
+    $('#request-information').html(info);
+  };
+
 
   /*
     Callback to handle the initial request for all prices. The response
@@ -40,7 +51,7 @@ $(function () {
     _.each(response.results, handleVendorResponse);
 
     // FIXME - show country and currency details
-
+    displayRequestInfo(response);
   };
 
   var displayOffer = function (offerRow, offer) {
