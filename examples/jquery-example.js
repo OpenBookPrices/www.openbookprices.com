@@ -11,8 +11,12 @@
 
 $(function () {
 
-  var api_base = 'http://127.0.0.1:3000';
-  // var api_base = 'http://api.openbookprices.com';
+  var api_base = 'http://api.openbookprices.com';
+
+  if ( ! window.location.hostname.match(/www\.openbookprices\.com/) ) {
+    window.console && window.console.log("On dev server, using local API endpoint.");
+    api_base = 'http://127.0.0.1:3000';
+  }
 
   // Get the template's markup...
   var offerTemplate = $('#tmpl-offer').html();
