@@ -11,45 +11,57 @@ title: jQuery example
 <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
 <script src="/examples/jquery-example.js"></script>
 
+<style type="text/css" media="screen">
+  #results li {
+    list-style: none;
+  }
+
+  #results li.offer {
+    padding: 0.5em;
+    background-color: #ddd;
+    border-radius: 0.5em;
+  }
+
+  #pending li {
+    padding: 0 18px;
+    background: #fff url('/assets/image/ajax-loader.gif') no-repeat;
+    border-radius: 0.5em;
+    list-style: none;
+    display: inline;
+  }
+</style>
+
 <form id="isbn-form">
   <input type="text" id="isbn-input" placeholder="ISBN..." value="9781619493919">
-  <span>Try 9781619493919</span>
   <input type="submit" value="Load prices">
-
 </form>
 
-  <div id="request-information">
-    <!-- Will be replaced by the contents of the 'tmpl-request-information' template -->
-    &nbsp;
-  </div>
-
-
-<h2>Pending requests:</h2>
-
-<ul id="pending">
-  <li>Pending vendors will go here</li>
-</ul>
+<p id="request-information">
+  <!-- Will be replaced by the contents of the 'tmpl-request-information' template -->
+  &nbsp;
+</p>
 
 <h2>Results:</h2>
+
+<ul id="pending"></ul>
 
 <ul id="results">
   <li>Results will go here</li>
 </ul>
 
 <script id="tmpl-offer" type="text/template">
-  <li id="offer-<%= id %>" data-total-price="<%= offer.total %>">
+  <li id="offer-<%= id %>" class="offer" data-total-price="<%= offer.total %>">
     <?-- FIXME - should be offer.url -->
     <a href="<%= response.vendor.url %>"><%= response.vendor.name %></a> (<%= condition %>)<br>
     Total price: <strong><%= offer.total %> <%= response.request.currency %></strong><br>
-    Book price:  <%= offer.price %> <%= response.request.currency %><br>
+    Book:  <%= offer.price %> <%= response.request.currency %> &mdash; <%= offer.availabilityNote %><br>
     Shipping: <%= offer.shipping %> <%= response.request.currency %> &mdash; <%= offer.shippingNote %><br>
-    Availability: <%= offer.availabilityNote %><br>
   </li>
 </script>
 
 <script id="tmpl-pending" type="text/template">
   <li id="pending-<%= id %>">
-    <%= response.vendor.name %>&hellip;
+    <%= response.vendor.name %>
   </li>
 </script>
 
