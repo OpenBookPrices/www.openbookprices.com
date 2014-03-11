@@ -22,6 +22,7 @@ $(function () {
   var offerTemplate = $('#tmpl-offer').html();
   var pendingTemplate = $('#tmpl-pending').html();
   var requestInfoTemplate = $('#tmpl-request-information').html();
+  var bookDetialsTemplate = $('#tmpl-book-information').html();
 
   var pendingList = $('#pending');
   var resultsList = $('#results');
@@ -54,7 +55,6 @@ $(function () {
     // price request.
     _.each(response.results, handleVendorResponse);
 
-    // FIXME - show country and currency details
     displayRequestInfo(response);
   };
 
@@ -138,6 +138,14 @@ $(function () {
 
   };
 
+  var handleDetailsResponse = function (response) {
+    var detailsHTML = _.template(
+      bookDetialsTemplate,
+      { book: response }
+    );
+    $('#book-information').html(detailsHTML);
+  };
+
 
   $("#isbn-form").submit( function (e) {
 
@@ -157,7 +165,11 @@ $(function () {
       handlePricesResponse
     );
 
-    // FIXME - show currency and country details
+    // Get the book details
+    $.get(
+      api_base + "/v1/books/" + isbn + "/details",
+      handleDetailsResponse
+    );
 
   });
 });

@@ -36,6 +36,11 @@ title: jQuery example
   <input type="submit" value="Load prices">
 </form>
 
+<p id="book-information">
+  <!-- Will be replaced by the contents of the 'tmpl-book-information' template -->
+  &nbsp;
+</p>
+
 <p id="request-information">
   <!-- Will be replaced by the contents of the 'tmpl-request-information' template -->
   &nbsp;
@@ -69,4 +74,8 @@ title: jQuery example
     Finding prices for books sent to <strong><%= response.request.country %></strong>
     with prices converted to <strong><%= response.request.currency %></strong>. These
     were determined from your IP address. See the <a href="<%= response.request.url %>">raw JSON request</a>.
+</script>
+
+<script id="tmpl-book-information" type="text/template">
+    <strong><%= book.title %></strong> by <%= book.authors.join(", ") %>.
 </script>
