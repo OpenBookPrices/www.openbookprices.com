@@ -56,8 +56,7 @@ title: jQuery example
 
 <script id="tmpl-offer" type="text/template">
   <li id="offer-<%= id %>" class="offer" data-total-price="<%= offer.total %>">
-    <?-- FIXME - should be offer.url -->
-    <a href="<%= response.vendor.url %>"><%= response.vendor.name %></a> (<%= condition %>)<br>
+    <a href="<%= offer.url %>"><%= response.vendor.name %></a> (<%= offer.condition %>)<br>
     Total price: <strong><%= offer.total %> <%= response.request.currency %></strong><br>
     Book:  <%= offer.price %> <%= response.request.currency %> &mdash; <%= offer.availabilityNote %><br>
     Shipping: <%= offer.shipping %> <%= response.request.currency %> &mdash; <%= offer.shippingNote %><br>

@@ -2,9 +2,7 @@
 
   TODO
 
-  * add url to offer block
   * ? add signature to offer entry?
-  * ? add condition to offer entry?
 
 */
 
@@ -22,7 +20,7 @@ $(function () {
   var offerTemplate = $('#tmpl-offer').html();
   var pendingTemplate = $('#tmpl-pending').html();
   var requestInfoTemplate = $('#tmpl-request-information').html();
-  var bookDetialsTemplate = $('#tmpl-book-information').html();
+  var bookDetailsTemplate = $('#tmpl-book-information').html();
 
   var pendingList = $('#pending');
   var resultsList = $('#results');
@@ -84,8 +82,8 @@ $(function () {
     var offers = response.offers;
 
     // display the prices
-    _.each(offers, function (offer, condition) {
-      var row_identifier = isbn + '-' + response.request.vendor + '-' + condition;
+    _.each(offers, function (offer) {
+      var row_identifier = isbn + '-' + response.request.vendor + '-' + offer.condition;
 
       // delete any existing li for this entry
       $('#offer-' + row_identifier).remove();
@@ -93,7 +91,7 @@ $(function () {
       var offerRow = $(
         _.template(
           offerTemplate,
-          { response: response, offer : offer, condition: condition, id: row_identifier }
+          { response: response, offer : offer, id: row_identifier }
         )
       );
 
@@ -140,7 +138,7 @@ $(function () {
 
   var handleDetailsResponse = function (response) {
     var detailsHTML = _.template(
-      bookDetialsTemplate,
+      bookDetailsTemplate,
       { book: response }
     );
     $('#book-information').html(detailsHTML);
