@@ -8,7 +8,7 @@ exclude: [LICENSE, CNAME, README.md, .gitignore]
 theme:
   # Color for top bar, links, etc
   highlight_color: '#771188'
-
+  background_color: '#CEADD4'
 
   # Profile links on the left sidebar, leave blank to ignore
   social:
