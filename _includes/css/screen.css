@@ -115,3 +115,15 @@ footer p {
 footer a {
   color: inherit;
 }
+
+table {
+  margin-bottom: 20px;
+  border: 1px solid #bbb;
+/*  background-color: #f8f8f8;*/
+}
+
+td {
+  border: 1px solid #ddd;
+  padding: 0.5em;
+}
+

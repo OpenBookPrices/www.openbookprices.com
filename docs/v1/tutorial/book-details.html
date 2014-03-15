@@ -1,0 +1,58 @@
+---
+layout: tutorial-v1
+title: Book Details
+---
+
+<h1>Getting book details</h1>
+
+<p>The API can tell you basic details about a book, such as author and price.
+To get these you need to know the ISBN of the book.</p>
+
+<h2>A note on ISBNs</h2>
+
+<p>An ISBN is the "International Standard Book Number" and is unique for each
+book. It is usually printed at the back of the book near the barcode (see <a
+href="http://en.wikipedia.org/wiki/International_Standard_Book_Number">Wikipedia
+ ISBN entry</a> for an example).</p>
+
+<p>ISBN numbers look like <tt>1619493918</tt> or
+<tt>978-1619493919</tt>. Both of these refer to the same book, the first is
+an ISBN-10 and the second an ISBN-13 (which were introduced when they started
+running out of of 10 char ones).</p>
+
+
+<h2>Getting book details</h2>
+
+<p>The API returns book details using urls of the form:</p>
+
+{% highlight html %}
+http://api.openbookprices.com/v1/books/<isbn>/details
+{% endhighlight %}
+
+<p>So for example for an isbn of <tt>9781619493919</tt> the url and response would be:</p>
+
+<p><a href="http://api.openbookprices.com/v1/books/9781619493919/details">http://api.openbookprices.com/v1/books/9781619493919/details</a></p>
+
+{% highlight json %}
+{
+  "authors": [
+    "Henry David Thoreau"
+  ],
+  "title": "Walden",
+  "isbn": "9781619493919"
+}
+{% endhighlight %}
+
+<p>If you use the ISBN-10 in the URL the API will redirect you to the ISBN-13. The
+API tries to correct all such errors by redirects rather that 404s or 400s.</p>
+
+{% highlight bash %}
+$ curl -i http://api.openbookprices.com/v1/books/1619493918/details
+HTTP/1.1 301 Moved Permanently
+
+Moved Permanently. Redirecting to http://api.openbookprices.com/v1/books/9781619493919/details
+{% endhighlight %}
+
+<p></p>
+
+<!-- FIXME: add link to the API reference docs -->

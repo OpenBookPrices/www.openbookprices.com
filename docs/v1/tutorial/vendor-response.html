@@ -1,0 +1,223 @@
+---
+layout: tutorial-v1
+title: Tutorial
+---
+
+<h1>Getting a specific book price</h1>
+
+<p>In the last step we got book details such as title and author. In this step
+we are going to get the price of a book from an online shop.
+
+<p>The API url has the following form:</p>
+
+{% highlight html %}
+http://api.openbookprices.com/v1/books/<isbn>/prices/<countryCode>/<currencyCode>/<vendorCode>
+{% endhighlight %}
+
+<p>Don't worry too much about the codes for now - as you'll see later you don't
+actually need to know them when using the API. The <tt>countryCode</tt> and
+<tt>currencyCode</tt> entries are from the ISO standards (see <a
+href="https://github.com/OpenBookPrices/country-data/blob/master/data/countries.
+csv">countries.csv</a> and <a
+href="https://github.com/OpenBookPrices/country-data/blob/master/data/currencies
+.csv">currencies.csv</a> for a full list). The <tt>vendorCode</tt> is the
+code that this API uses to identify the various online retailers.</p>
+
+<p>For this example we'll use <a href="http://amazon.com">amazon.com</a> as the vendor, with shipping to
+the USA and pricing in US dollars:</p>
+
+<p><a href="http://api.openbookprices.com/v1/books/9781619493919/prices/US/USD/amazon_us">http://api.openbookprices.com/v1/books/9781619493919/prices/US/USD/amazon_us</a></p>
+
+{% highlight json %}
+{
+  "status": "ok",
+  "request": {
+    "isbn": "9781619493919",
+    "country": "US",
+    "vendor": "amazon_us",
+    "currency": "USD",
+    "url": "http://api.openbookprices.com/v1/books/9781619493919/prices/US/USD/amazon_us"
+  },
+  "offers": {
+    "new": {
+      "price": 0.89,
+      "availabilityNote": "Usually ships in 24 hours",
+      "shipping": 3.99,
+      "shippingNote": "3 to 5 business days (Free shipping eligible on orders over 35 USD)",
+      "url": "http://www.amazon.com/dp/1619493918",
+      "condition": "new",
+      "total": 4.88
+    }
+  },
+  "vendor": {
+    "code": "amazon_us",
+    "url": "http://www.amazon.com/dp/1619493918",
+    "name": "Amazon USA",
+    "homepage": "http://www.amazon.com/"
+  },
+  "meta": {
+    "timestamp": 1394901071,
+    "ttl": 3600,
+    "retryDelay": null,
+    "preConversionCurrency": null
+  }
+}
+{% endhighlight %}
+
+
+<h2>Response explanation</h2>
+
+<p>Hopefully the response is fairly self explanatory. There are five main parts to it:</p>
+
+
+<h3>Status</h3>
+
+{% highlight json %}
+{
+  "status": "ok",
+  ...
+}
+{% endhighlight %}
+
+<p>The status (in this case <tt>ok</tt>) tells you about the status for the whole response. The possible values are:</p>
+
+<table>
+  <tr>
+    <td><tt>unfetched</tt></td>
+    <td>No pricing data has been fetched for this vendor, yet.</td>
+  </tr>
+  <tr>
+    <td><tt>pending</tt></td>
+    <td>No pricing data is available, but is currently being fetched from the vendor. You should re-request later (see <tt>retryDelay</tt> below).</td>
+  </tr>
+  <tr>
+    <td><tt>ok</tt></td>
+    <td>The response is all good. It contains pricing data which is not too old to be considered inaccurate.</td>
+  </tr>
+  <tr>
+    <td><tt>stale</tt></td>
+    <td>The pricing data fetched from the vendor is now too old so fresh information is being fetched. The old data has been provided in the meantime.</td>
+  </tr>
+  <tr>
+    <td><tt>error</tt></td>
+    <td>Something has gone wrong trying to fetch data from the vendor.</td>
+  </tr>
+</table>
+
+<p>In most cases you'll only really care about data that has a status of
+<tt>ok</tt>. The other response types are mostly there for applications
+where it is important to provide a human realtime updates on the status of a
+request. There is a helpful field <tt>retryDelay</tt> in the
+<tt>meta</tt> section that is easier to work with than these statuses.</p>
+
+<h3>Request</h3>
+
+{% highlight json %}
+{
+  ...,
+  "request": {
+    "isbn": "9781619493919",
+    "country": "US",
+    "vendor": "amazon_us",
+    "currency": "USD",
+    "url": "http://api.openbookprices.com/v1/books/9781619493919/prices/US/USD/amazon_us"
+  },
+  ...
+}
+{% endhighlight %}
+
+<p>This is an echo of the request that was sent to the server. It also contains
+the API url that should be used for subsequent requests.</p>
+
+<p>In certain circumstances it is possible that the response you get is
+different to the request you sent, for example if you provided an ISBN-10
+rather than an ISBN-13 and the server issued a redirect to a corrected url.</p>
+
+<h3>Offers</h3>
+
+{% highlight json %}
+{
+  ...,
+  "offers": {
+    "new": {
+      "price": 0.89,
+      "availabilityNote": "Usually ships in 24 hours",
+      "shipping": 3.99,
+      "shippingNote": "3 to 5 business days (Free shipping eligible on orders over 35 USD)",
+      "url": "http://www.amazon.com/dp/1619493918",
+      "condition": "new",
+      "total": 4.88
+    }
+  },
+  ...
+}
+{% endhighlight %}
+
+<p>"Offers" is a bit of jargon for a combination of <tt>isbn</tt>,
+<tt>condition</tt> and <tt>vendor</tt>. It is possible that a vendor
+will provide the same book in several conditions (eg "<tt>new</tt>" or
+"<tt>used</tt>").</p>
+
+<p>If a book is not available from the vendor then the <tt>offers</tt> will
+be empty (<tt>{}</tt>).</p>
+
+<p>Each offer has the <tt>price</tt> and <tt>shipping</tt> costs for the book,
+which add up to the <tt>total</tt>. The notes <tt>shippingNote</tt> and
+<tt>availabilityNote</tt> are strings provided by the vendor. The <tt>url</tt>
+is the page on the vendor's website for this offer.</p>
+
+
+<h3>Vendor</h3>
+
+{% highlight json %}
+{
+  ...,
+  "vendor": {
+    "code": "amazon_us",
+    "url": "http://www.amazon.com/dp/1619493918",
+    "name": "Amazon USA",
+    "homepage": "http://www.amazon.com/"
+  },
+  ...
+}
+{% endhighlight %}
+
+<p>This is some detail about the vendor. The <tt>url</tt> is the page on
+the vendor's site that the book can be found at. This is provided in case there
+are no entries in <tt>offers</tt>.</p>
+
+
+<h3>Meta</h3>
+
+{% highlight json %}
+{
+  ...,
+  "meta": {
+    "timestamp": 1394901071,
+    "ttl": 3600,
+    "retryDelay": null,
+    "preConversionCurrency": null
+  }
+}
+{% endhighlight %}
+
+<p>This is meta-data about the response:</p>
+
+<table>
+  <tr>
+    <td><tt>timestamp</tt></td>
+    <td>The <a href="http://en.wikipedia.org/wiki/Unix_time">unix time</a> when the data was fetched (unix time is the number of seconds since 1 January 1970).</td>
+  </tr>
+  <tr>
+    <td><tt>ttl</tt></td>
+    <td>The time to live (in seconds) of this data until it is no longer considered fresh. This value should be added to the <tt>timestamp</tt> to get the time when it expires. This information is also used to set the HTTP caching headers so that proxies will cache the response appropriately.</td>
+  </tr>
+  <tr>
+    <td><tt>retryDelay</tt></td>
+    <td>The number of seconds to delay before re-submitting the request to the API, or <tt>null</tt> if no further requests are needed. This is intended to be used in the code to decide wether to re-request, rather than the <tt>status</tt>. If a further request is required this will have a truthy value (ie not <tt>0</tt>) to make your control flow logic easier.</td>
+  </tr>
+  <tr>
+    <td><tt>preConversionCurrency</tt></td>
+    <td>The code for the currency that the vendor provided the pricing data in, if different to the currency requested. The API will do currency conversions using data provided by <a href="https://openexchangerates.org/">Open Exchange Rates</a> if required.</td>
+  </tr>
+</table>

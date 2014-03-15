@@ -1,0 +1,134 @@
+---
+layout: tutorial-v1
+title: Vendor List
+---
+
+<h1>Book prices from several vendors</h1>
+
+<p>In the previous step we looked at getting prices for a book from a single
+vendor. In this step we'll get prices for a book from all available vendors.</p>
+
+<p>The url for this API request looks like this:</p>
+
+{% highlight html %}
+http://api.openbookprices.com/v1/books/<isbn>/prices
+{% endhighlight %}
+
+<p>Note that it does not include the <tt>countryCode</tt> or the
+<tt>currencyCode</tt> - we'll let the API server determine these from your IP
+address:</p>
+
+{% highlight bash %}
+$ curl -i http://api.openbookprices.com/v1/books/9781619493919/prices
+HTTP/1.1 302 Moved Temporarily
+Location: http://api.openbookprices.com/v1/books/9781619493919/prices/GB/GBP
+
+Moved Temporarily. Redirecting to http://api.openbookprices.com/v1/books/9781619493919/prices/GB/GBP
+{% endhighlight %}
+
+<p>The server has redirected me to <tt>GB</tt> and <tt>GBP</tt> as my IP
+address is from the UK. If you want you can provide just the country code and
+the API server will redirect you to the correct currency for that country
+(France uses the Euro):</p>
+
+{% highlight bash %}
+$ curl -i http://api.openbookprices.com/v1/books/9781619493919/prices/FR
+HTTP/1.1 301 Moved Permanently
+Location: http://api.openbookprices.com/v1/books/9781619493919/prices/FR/EUR
+
+Moved Permanently. Redirecting to http://api.openbookprices.com/v1/books/9781619493919/prices/FR/EUR
+{% endhighlight %}
+
+<p>This redirection is very handy as it allows you to let the server deal with
+the complicated geolocating and then just follow the redirects it sends you.</p>
+
+<p>Now to look at an actual response:</p>
+
+<p><a href="http://api.openbookprices.com/v1/books/9781619493919/prices/GB/GBP">http://api.openbookprices.com/v1/books/9781619493919/prices/GB/GBP</a></p>
+
+{% highlight json %}
+{
+  "request": {
+    "isbn": "9781619493919",
+    "country": "GB",
+    "currency": "GBP",
+    "url": "http://api.openbookprices.com/v1/books/9781619493919/prices/GB/GBP"
+  },
+  "results": [
+    {
+      "status": "unfetched",
+      "request": {
+        "isbn": "9781619493919",
+        "country": "GB",
+        "vendor": "amazon_uk",
+        "currency": "GBP",
+        "url": "http://api.openbookprices.com/v1/books/9781619493919/prices/GB/GBP/amazon_uk"
+      },
+      "offers": {},
+      "vendor": {
+        "code": "amazon_uk",
+        "url": null,
+        "name": "Amazon UK",
+        "homepage": "http://www.amazon.co.uk/"
+      },
+      "meta": {
+        "timestamp": 1394908065,
+        "ttl": 0,
+        "retryDelay": 0.1,
+        "preConversionCurrency": null
+      }
+    },
+    {
+      "status": "ok",
+      "request": {
+        "isbn": "9781619493919",
+        "country": "GB",
+        "vendor": "amazon_us",
+        "currency": "GBP",
+        "url": "http://api.openbookprices.com/v1/books/9781619493919/prices/GB/GBP/amazon_us"
+      },
+      "offers": {
+        "new": {
+          "price": 0.53,
+          "availabilityNote": "Usually ships in 24 hours",
+          "shipping": 4.79,
+          "shippingNote": "18 to 32 business days",
+          "url": "http://www.amazon.com/dp/1619493918",
+          "condition": "new",
+          "total": 5.32
+        }
+      },
+      "vendor": {
+        "code": "amazon_us",
+        "url": "http://www.amazon.com/dp/1619493918",
+        "name": "Amazon USA",
+        "homepage": "http://www.amazon.com/"
+      },
+      "meta": {
+        "timestamp": 1394908053,
+        "ttl": 3600,
+        "retryDelay": null,
+        "preConversionCurrency": "USD"
+      }
+    },
+    // "... other vendors ommitted for brevity ..."
+  ]
+}
+{% endhighlight %}
+
+<p>This response should look quite familiar. The <tt>request</tt> is again a
+breakdown of the request that was sent to the server. The <tt>results</tt> is
+an array of the responses that you would expect back from the vendor specific
+request we looked at in the last step.</p>
+
+<p>It is intented that you pass each entry in <tt>results</tt> to the code that
+you'd use to handle the vendor specific request. In our example above the
+<tt>amazon_us</tt> response has a status of <tt>ok</tt> so can be used straight
+away. The <tt>amazon_uk</tt> response is <tt>unfetched</tt>, and the
+<tt>retryDelay</tt> is <tt>0.1</tt> seconds so that the code knows to re-issue
+the request.</p>
+
+<p>This response will come back as quickly as possible. It will not block
+trying to scrape data from the various vendors. This means that it can be
+quickly used to display something to a user. The vendor specific requests will
+block for a short period if a scrape is required.</p>

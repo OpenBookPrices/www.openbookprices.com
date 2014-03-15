@@ -1,0 +1,90 @@
+---
+layout: tutorial-v1
+title: Miscellaneous
+---
+
+<h1>Miscellaneous notes</h1>
+
+<p>There are some things that are worth noting:</p>
+
+<h2>Ping endpoint</h2>
+
+<p>There is an endpoint at
+<a href="http://api.openbookprices.com/v1/ping">http://api.openbookprices.com/v1/ping</a>
+that should never be cached and returns some information about your IP address.
+This may be useful for debugging in some circumstances.</p>
+
+<h2>HTTP caching</h2>
+
+<p>As this API is delivered over the web it makes sense for caching to be used so that you get faster results.</p>
+
+<p>URLs are rewritten so that they are consistent:</p>
+
+{% highlight bash %}
+$ curl -i http://api.openbookprices.com/v1/books/978-161949-39-19/prices/gb/gBp
+HTTP/1.1 301 Moved Permanently
+Location: http://api.openbookprices.com/v1/books/9781619493919/prices/GB/GBP
+
+Moved Permanently. Redirecting to http://api.openbookprices.com/v1/books/9781619493919/prices/GB/GBP
+{% endhighlight %}
+
+<p>As much as possible caching headers are added so that proxies will cache the
+responses. This response will only be cached for 30 seconds as some of the
+results might change. Once all results have been collected the cache time would
+be set as long as possible:</p>
+
+{% highlight bash %}
+$ curl -i http://api.openbookprices.com/v1/books/9781619493919/prices/GB/GBP
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Cache-Control: public, max-age=30
+ETag: "587516446"
+Date: Sat, 15 Mar 2014 18:57:35 GMT
+Vary: Accept-Encoding
+{% endhighlight %}
+
+<p>Amazon's CloudFront is used as a global content delivery network to cache and speed up response times:</p>
+
+{% highlight bash %}
+$ curl -i http://api.openbookprices.com/v1/books/9781619493919/prices/GB/GBP
+HTTP/1.1 200 OK
+X-Cache: Miss from cloudfront
+
+# The same request a few moments later...
+$ curl -i http://api.openbookprices.com/v1/books/9781619493919/prices/GB/GBP
+HTTP/1.1 200 OK
+X-Cache: Hit from cloudfront
+{% endhighlight %}
+
+
+<h2>CORS headers and JSONP</h2>
+
+<p>For those wishing to use the API from JavaScript running on modern browsers
+the <tt>Access-Control-Allow-Origin</tt> is set to allow <a
+href="http://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS
+requests</a>.</p>
+
+{% highlight bash %}
+$ curl -i http://api.openbookprices.com/v1/books/9781619493919/prices/GB/GBP
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+{% endhighlight %}
+
+<p>If you prefer to use <a href="http://en.wikipedia.org/wiki/JSONP">JSONP</a>
+instead just add a <tt>callback</tt> parameter (but note that your responses
+will not be cacheable as the <tt>callback</tt> parameter's value will always be
+changing):</p>
+
+{% highlight bash %}
+$ curl -i http://api.openbookprices.com/v1/books/9781619493919/prices/GB/GBP?callback=foo1234
+HTTP/1.1 200 OK
+Content-Type: text/javascript; charset=utf-8
+{% endhighlight %}
+{% highlight javascript %}
+foo1234 && foo1234({
+  // normal response contents would be here
+});
+{% endhighlight %}
+
+<p>Note that the urls in the responses do not have <tt>?callback=...</tt> added
+to them.</p>

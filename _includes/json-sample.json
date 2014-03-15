@@ -1,0 +1,9 @@
+{
+  "string": "blah blah blah",
+  "hash": {
+    "key": "value"
+  },
+  "list": [ "one", "two", "many" ],
+  "number": 1.23,
+  "others": [ true, false, null ]
+}

@@ -63,16 +63,24 @@
 pre {
   white-space: pre;
   overflow: auto;
-  background-color: #f8f8f8;
-  border: 1px solid #ddd;
   line-height: 19px;
   padding: 6px 10px;
-  border-radius: 3px;
   margin-bottom: 20px;
 }
 
-code, pre {
+pre, tt {
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+
+code, pre, tt {
   font-size: 12px;
   font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
 }
 
+tt {
+  padding: 0 4px;
+  word-break: keep-all;
+  white-space: nowrap;
+}
