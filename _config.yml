@@ -4,6 +4,9 @@ url: http://www.openbookprices.com
 lsi: false
 exclude: [LICENSE, CNAME, README.md, .gitignore]
 
+
+permalink: none
+
 # Theme customization - please change from the defaults!
 theme:
   # Color for top bar, links, etc
