@@ -3,4 +3,5 @@
 {% include css/base.css %}
 {% include css/screen.css %}
 {% include css/tutorial.css %}
+{% include css/homepage.css %}
 {% include css/syntax.css %}
