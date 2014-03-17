@@ -2,4 +2,5 @@
 ---
 {% include css/base.css %}
 {% include css/screen.css %}
+{% include css/tutorial.css %}
 {% include css/syntax.css %}

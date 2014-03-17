@@ -1,0 +1,20 @@
+.tutorial-previous, .tutorial-next {
+  font-weight: bold;
+}
+
+.tutorial-previous a, .tutorial-next a {
+  text-decoration: none;
+}
+
+.tutorial-previous a:hover, .tutorial-next a:hover {
+  text-decoration: underline;
+}
+
+.tutorial-previous {
+  float: left;
+}
+
+.tutorial-next {
+  float: right;
+}
+
